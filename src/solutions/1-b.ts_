@@ -1,0 +1,14 @@
+'use strict';
+
+import str from '../data';
+import parseData from '../list-helper';
+
+const lists:number[][] = parseData(str);
+
+let similarity = 0;
+
+lists[0].forEach(a=> {
+	similarity += a* lists[1].filter(b => a===b).length;
+});
+
+console.log(similarity);
