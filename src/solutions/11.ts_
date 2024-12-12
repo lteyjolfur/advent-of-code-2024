@@ -1,0 +1,90 @@
+const input2 = '125 17';
+const input = '2 77706 5847 9258441 0 741 883933 12';
+
+
+//0:10
+//1:4
+//2:10
+//3:10
+//4:15
+
+
+
+type NumberDict = { [key: string]: number }
+let stones: NumberDict = {};
+
+input.split(' ').forEach(c=> stones[Number(c)] = 1);
+console.log(stones);
+
+// const applyRules = (n:number):number[] => {
+// 	const rules = [
+// 		(n:number) => n===0&&[1],
+// 		(n:number) => {
+// 			const nString = n.toString();
+// 			const nLength = nString.length;
+// 			if(nLength%2===0){
+// 				const exp = Math.pow(10,nLength);
+// 				[Math.floor(n/exp),n%exp];
+// 			}
+// 			return false;
+// 		}, // Todo
+// 		(n:number) => [n*2024]
+// 	];
+// 	return rules.find(n)
+// };
+
+const rules = [
+	(n:number):number[]|false => n===0&&[1],
+	(n:number):number[]|false => {
+		const nString = n.toString();
+		const nLength = nString.length;
+		if(nLength%2===0){
+			const exp = Math.pow(10,nLength);
+			return [Math.floor(n/exp),n%exp];
+		}
+		return false;
+	}, // Todo
+	(n:number):number[] => [n*2024]
+];
+
+const split = 	(n:number):number[]|false => {
+	const nString = n.toString();
+	const nLength = nString.length;
+	if(nLength%2===0){
+		const exp = Math.pow(10,nLength/2);
+		return [Math.floor(n/exp),n%exp];
+	}
+	return false;
+};
+
+const applyRules = (n:number) => {
+	return n===0&&[1] || split(n) || [n*2024];
+};
+
+
+for(let i = 0; i < 75; i++){
+	const newStones : NumberDict = {};
+	Object.keys(stones).map(s=>Number(s)).forEach((key)=>{
+		///newStones = [...newStones,...applyRules(stone)];
+		const numStones  = stones[key];
+		const ns = applyRules(Number(key));
+		ns.forEach(n=>{
+			newStones[n]??= 0;
+			newStones[n]+= numStones;
+		});
+	});
+	stones = newStones;
+}
+console.log(stones);
+console.log(Object.values(stones).reduce((acc,cur)=>cur+acc,0));
+
+
+/*
+If the stone is engraved with a number that has an even number of digits, it is replaced by two stones.
+ The left half of the digits are engraved on the new left stone,
+  and the right half of the digits are engraved on the new right stone.
+   (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
+
+If none of the other rules apply, the stone is replaced by a new stone;
+ the old stone's number multiplied by 2024 is engraved on the new stone.
+*/

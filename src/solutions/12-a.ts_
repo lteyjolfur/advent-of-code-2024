@@ -1,33 +1,8 @@
-const inputc = `RRRRIICCFF
-RRRRIICCCF
-VVRRRCCFFF
-VVRCCCJFFF
-VVVVCJJCFE
-VVIVCCJJEE
-VVIIICJJEE
-MIIIIIJJEE
-MIIISIJEEE
-MMMISSJEEE`;
-
-const input1 = `EEEEE
-EXXXX
-EEEEE
-EXXXX
-EEEEE`;
-
-
-const inputAA = `AAAAA
-AAABA
-AABAA
-AAAAA`;
-
-const inputa = `AAAAAA
-AAABBA
-AAABBA
-ABBAAA
-ABBAAA
-AAAAAA`;
-
+const input1 = `OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO`;
 
 const input = `AAAAARRRRRRRRRRROOOOOOOOOOOOWWWWWWWWWWWWWMMMMXXQQQQQQQWWWXXXXXXXXQQQQQQQQQQQQQQQQQQQDDDDDDBBBBBBBBBBBBBBBBBRRRRRRRRRRREEEEEEEEEEEEEJJJJJJJJJ
 AAAAARRRRRRRROOROOOOOOOOOOWWWWWWWWWWWWWWWWWMMMMQQQQQQQQWXXXXXXXXXQQQQXQQQQQQQQQQQQQQDDDDDDBBBBBBBBBBBBBBBBBRRRRRRRREEEEEEEEEEEEEZEJJJJJJJJJJ
@@ -172,14 +147,13 @@ TTTTTTTXIIRIRIIIGGGGGGGGGGGGYYYYYYEYIIIIIHHHHHHHHHHHHHHHHHHTTTTTTTTTTTTTAAAIIIII
 
 
 
-interface Direction {x:number,y:number,name?:string}
-type DirStr = ('up'|'down'|'left'|'right')
+interface Direction {x:number,y:number}
 
 const directions = [
-	{x:0,y:-1,name:'up'},
-	{x:0,y:1, name:'down'},
-	{x:-1,y:0, name:'left'},
-	{x:1,y:0, name:'right'},
+	{x:0,y:-1},
+	{x:0,y:1},
+	{x:-1,y:0},
+	{x:1,y:0},
 ];
 
 const dirStr:('up'|'down'|'left'|'right')[] = ['up','down','left','right'];
@@ -193,8 +167,7 @@ interface Plot extends Direction {
 type Fence = {
 	area:number,
 	perimeter:number,
-	p:string
-	plots: Plot[]
+	outer:number
 }
 
 const garden:Plot[][] = input.split('\n').map((row,y)=>row.split('').map((p,x)=>({p,x,y,isFenced:false,oFence:[]})));
@@ -206,54 +179,6 @@ const fences:Fence[] = [];
 
 const boundryCheck = (c:Direction) => c.x > -1 && c.x < gardenWidth && c.y > -1 && c.y < gardenHeight;
 
-const fenceCheckV= (p:Plot,d:Direction,fence:Fence) => {
-	const up = sum(directions[0],p);
-	const down = sum(directions[1],p);
-
-	let isFound = false;
-	if (boundryCheck(up)){ 
-		const upP = garden[up.y][up.x];	
-		if(upP.p === p.p && upP.oFence.includes(d.name as DirStr)){
-			isFound = true;
-		}}
-	if(boundryCheck(down)){ 
-		const downP = garden[down.y][down.x];
-		if(  downP.p === p.p &&  downP.oFence.includes(d.name as DirStr)){
-			isFound = true;
-		}}
-	if (!isFound){
-		if(p.p === 'E'){
-			console.log(p);
-		}
-		fence.perimeter ++;
-	}
-};
-
-const fenceCheckH= (p:Plot,d:Direction,fence:Fence) => {
-	const left = sum(directions[2],p);
-	const right = sum(directions[3],p);
-	
-	let isFound = false;
-	if (boundryCheck(left)){
-		const leftP = garden[left.y][left.x];
-		if(leftP.p === p.p && leftP.oFence.includes(d.name as DirStr)){
-			isFound = true;
-		}}
-	if(boundryCheck(right)){
-		const rightP = garden[right.y][right.x]; 
-		if(rightP.p === p.p &&  rightP.oFence.includes(d.name as DirStr)){
-			isFound = true;
-		}}
-	if (!isFound){
-		if(p.p === 'E'){
-			console.log(p);
-		}
-		fence.perimeter ++;
-	}
-};
-
-
-
 const sum = (a:Direction,b:Direction) => ({y:a.y+b.y,x:a.x+b.x}); 
 
 
@@ -263,32 +188,19 @@ garden.forEach(row=>row.forEach(plot=> {
 		return;
 	}
 	console.log('-----');
-	const fence:Fence = {area:1,perimeter:0,p:plot.p,plots:[]};
-	const plotIdx: Direction[] = [];
+	const fence:Fence = {area:1,perimeter:0,outer:0};
 
-
-	const check = (d:Direction,p:Plot) => {
-		if (!plotIdx.find((i)=>p.x === i.x && p.y === i.y)){
-			plotIdx.push(p as Direction);
-		}
-		const makeFence = () => {
-			//fence.perimeter++;
-			p.oFence.push(d.name as DirStr);
-			if(d.x === 0){
-				fenceCheckH(p,d,fence);
-			} else {
-				fenceCheckV(p,d,fence);
-			}
-		};
+	const check = (d:Direction,p:Plot,i:number) => {
 		const location = sum(d,p);
-		
 		if(!boundryCheck(location)){
-			makeFence();
+			fence.perimeter++;
+			fence.outer++;
+			p.oFence.push(dirStr[i]);
 			return;
 		}
 		const plot = garden[location.y][location.x];
 		if (plot.p!==p.p){
-			makeFence();
+			fence.perimeter++;
 			return;
 		}
 		if (plot.isFenced) {
@@ -301,79 +213,20 @@ garden.forEach(row=>row.forEach(plot=> {
 
 	const crawl = (p:Plot) => {
 		p.isFenced = true;
-		directions.forEach((d)=>{
-			check(d,p);
+		directions.forEach((d,i)=>{
+			check(d,p,i);
 		});
 	};
 
 	crawl(plot);
-	console.log('||||');
-	console.log(plotIdx);
-	plotIdx.forEach(i=>{
-		fence.plots.push(garden[i.y][i.x]);
-	});
 	fences.push(fence);
 
 }));
 
-const corner = (p:Plot) => {
-	let corners = 0;
-	corners += p.oFence.includes('up') && p.oFence.includes('right')? 1:0;
-	corners += p.oFence.includes('up') && p.oFence.includes('left')? 1:0;
-	corners += p.oFence.includes('down') && p.oFence.includes('left')? 1:0;
-	corners += p.oFence.includes('down') && p.oFence.includes('right')? 1:0;
-
-	const upL:Direction = {x:-1,y:-1,name:'upL'};
-	const upR:Direction = {x:1,y:-1,name:'upL'};
-	const topLeft = sum(p as Direction, upL);
-	const topRight= sum(p as Direction, upR);
-	const right = sum(p as Direction, directions[3]);
-	const left =  sum(p as Direction, directions[2]);
-	const top = sum(p as Direction, directions[0]);
-	if(boundryCheck(topLeft)){
-		const tLP = garden[topLeft.y][topLeft.x];
-		const lP =  garden[left.y][left.x];
-		const tP = garden[top.y][top.x];
-		if (tLP.p===p.p) {
-			if ( tLP.oFence.includes('down') && tP.p === p.p  ) {
-				corners++;
-			} else if (tLP.oFence.includes('right') && lP.p == p.p) {
-				corners++;
-			}	
-		}
-	}
-
-	if(boundryCheck(topRight)){
-		const tRP = garden[topRight.y][topRight.x];
-		const rP =  garden[right.y][right.x];
-		const tP = garden[top.y][top.x];
-		if (tRP.p===p.p ){ 
-			if (tRP.oFence.includes('down') && tP.p === p.p ) {
-				corners++;
-			} else if ( tRP.oFence.includes('left') && rP.p === p.p) {
-				corners++;
-			}
-		}
-
-	}
-
-	if (p.p === 'E') {
-		console.log(p.x,p.y,corners);
-	}
-	return corners;
-};
-
-console.debug(garden.flatMap(x=>(x)).map(({p,x,y,oFence})=>(`${p}-${x},${y}: ${oFence}`)));
-fences.forEach(f=>{
-	f.perimeter = f.plots.reduce((acc,cur)=>acc+corner(cur),0);
-});
-console.log(fences.map(({area,perimeter,p})=>({area,perimeter,p})));
-console.debug(fences[0].plots);
-
+//console.debug(garden.flatMap(x=>x));
+console.log(fences);
 console.log(fences.reduce((acc,cur)=>acc+(cur.area*cur.perimeter),0));
 
-//899857, 891602, 873293 too high
-// e vitlaust á að vera 13,8 er 13,9
 
 
 
