@@ -1279,7 +1279,7 @@ Button B: X+11, Y+35
 Prize: X=4204, Y=354`;
 
 
-const input1 = `Button A: X+94, Y+34
+const input2 = `Button A: X+94, Y+34
 Button B: X+22, Y+67
 Prize: X=8400, Y=5400
 
@@ -1308,14 +1308,10 @@ const eqPairs: EqPair[] = [];
 input.split('\n\n').forEach((block,i)=>{
 
 	const eqs:number[][]= [[],[]];
-	block.split('\n').forEach((row,r) => {
+	block.split('\n').forEach((row) => {
 		row.split(',').forEach((segment,index)=> {
 			console.log(index);
-			let number = Number(segment.replace(/\D/g, ''));
-			if(r==2){
-				number+=10000000000000;
-			}
-			eqs[index].push(number);
+			eqs[index].push(Number(segment.replace(/\D/g, '')));
 		});
 	});
 	const artoEq = (ar:number[]) => ({a: ar[0],b:ar[1],c:ar[2]}); 
@@ -1368,7 +1364,7 @@ const scale = (a:Eq,s:number):Eq => ({a:a.a*s,b:a.b*s,c:a.c*s});
 
 // optimalPushes(bA,bB,price);
 
-const checkSolution = (n:number) => Number.isInteger(n) && n>0;
+const checkSolution = (n:number) => Number.isInteger(n) && n>0 && n<=100;
 
 const cost:number[] = [];
 
