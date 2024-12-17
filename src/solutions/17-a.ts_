@@ -1,0 +1,181 @@
+const input_t = `Register A: 729
+Register B: 0
+Register C: 0
+
+Program: 0,1,5,4,3,0`;
+
+const input = `Register A: 61156655
+Register B: 0
+Register C: 0
+
+Program: 2,4,1,5,7,5,4,3,1,6,0,3,5,5,3,0`;
+
+
+const [rawRegister,rawProgram] = input.split('\n\n');
+
+const register:bigint[] = Array(3).fill(BigInt(0));
+let program:number[] = [];
+
+const setRegister = (i:number,v:number) => register[i] = BigInt(v);
+
+
+//console.log(rawRegister,rawProgram);
+rawRegister.split('\n').forEach((row,i)=>{
+	setRegister(i,Number(row.match(/\d+/)));
+});
+program = rawProgram.split(' ')[1].split(',').map(c=>Number(c));
+console.log(register);
+console.log(program);
+
+
+
+const  realModulo = (a:bigint, bn:number) => {
+	const b = BigInt(bn);
+	return ((a % b) + b) % b;
+};
+
+
+
+const opNames = [
+	'adv','bxl','bst','jnz','bxc','out','bdv','adv'
+];
+
+
+
+//const runProgram = () => console.log(program.map(({op,val})=>operate(op,val)).filter(o=>o!== undefined).join(','));
+const runProgram = (isDebug=false) => {
+	const output:number[] = [];
+	while(pointer<program.length){
+		const op = program[pointer];
+		const val = program[pointer+1];
+		const out = operate(op,val);
+		if(isDebug){
+			console.log(`${opNames[op]}(${op},${val})`);
+			console.log(out);
+		}
+		if (out!==undefined){
+			output.push(Number(out));
+		}
+		pointer +=2;
+
+	}
+	console.log(output.join());
+	return output.join();
+};
+
+
+let pointer = 0;
+
+const reset = (t='RESET') => {
+	console.log(`---- ${t} ----`);
+	resetRegisters();
+	program = [];
+	pointer = 0;
+};
+
+const resetRegisters = () => {
+	for ( const i in register){
+		register[i] = BigInt(0);
+	}
+};
+
+const combo = (op:bigint) => {
+	switch(op){
+	case 0n:
+	case 1n:
+	case 2n:
+	case 3n:
+		return op;
+	case 4n:
+		return register[0];
+	case 5n:
+		return register[1];
+	case 6n:
+		return register[2];
+	default:
+		throw 'invalid combo';
+	}
+
+};
+
+
+
+const operate = (a:number,b:number|bigint):(number|void) => opcodes[a](BigInt(b));
+
+const xdv = (op:bigint) => register[0] >> combo(op);
+
+const opcodes = [
+	(op:bigint) => {register[0] = xdv(op);}, // adv
+	(op:bigint) => {register[1] = register[1] ^ op;},
+	(op:bigint) => {register[1] = realModulo(combo(op),8);},
+	(op:bigint) => {
+		if(register[0] > 0n){
+			pointer = Number(op) -2;
+		}},
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	(_op:bigint) => {register[1] = register[1] ^ register[2];}, //bxs
+	(op:bigint) => realModulo(combo(op),8), // out
+	(op:bigint) => {register[1] = xdv(op);}, //bdv
+	(op:bigint) => {register[2] = xdv(op);}, //cdv
+
+
+];
+
+
+const testOp2 = () => {
+	console.log('test2');
+	register[0] = BigInt(16);
+	console.log(register[0]>0);
+
+	opcodes[2](BigInt(2));
+	console.log(pointer);
+	register[0] = BigInt(0);
+	console.log(register[0]>0);
+	console.log(opcodes[2](BigInt(2)));
+};
+//test2();
+
+const tests = () => {
+	reset('0');
+	setRegister(2,9);
+	operate(2,6);
+	console.log('register[1] === 1n');
+	console.log(register[1] === 1n);
+	//1
+	reset('1');
+	setRegister(0,10);
+	program = [5,0,5,1,5,4];
+	runProgram();
+	console.log('program = 0,1,2');
+	//
+	reset('2');
+	setRegister(0,2024);
+	program = [0,1,5,4,3,0];
+	runProgram();
+	console.log('program = 4,2,5,6,7,7,7,7,3,1,0');
+	console.log('register[0] === 0n');
+	console.log(register[0] === 0n);
+	reset('3');
+	setRegister(1,29);
+	program=[1,7];
+	runProgram();
+	console.log('register[1]===26n');
+	console.log(register[1]===26n);
+	//
+	reset('4');
+	setRegister(1,2024),
+	setRegister(2,43690),
+	program=[4,0];
+	runProgram();
+	console.log('register[1]===44354n');
+	console.log(register[1]===44354n);
+
+};
+
+
+runProgram();
+//tests();
+
+// Wrong:
+//5,3,2,1,3,3,5,6,0
+//5,3,2,1,3,3,5,6,0
