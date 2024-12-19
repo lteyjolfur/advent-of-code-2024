@@ -1,5 +1,3 @@
-import memoizee from 'memoizee';
-
 const input = `brguub, gbb, bgr, uubb, uwg, wrbbuggu, ubg, bbgu, wugw, rbwur, bgbggur, wugguw, guguw, bbgrr, ggg, rwg, wuu, rbwrb, wbw, gbbug, brbbru, brr, wgww, grg, buwu, rubg, rbu, uwuw, rgb, wbrwbwu, rbgur, bgrwg, wwrgw, guw, gru, wbrbgu, brwu, wuw, bgu, wr, bwbbwb, bbbuu, ruru, wubwurru, rrguu, wguuw, gbrg, ubgg, brrw, bwr, bbg, wwwwbrb, ggrrgwg, gwwrwu, gruguw, uurbu, rgu, brb, ugwrgwrr, br, rwurgg, rbggwrw, bgb, uruw, wwr, bgbrgr, w, rbggu, bbbru, grw, guwu, wbwurg, wubwb, ruubr, wurgruw, bggru, gbuw, rbub, wgb, wb, uuuru, wuwwwbu, ruuggb, bubwuur, burrbrgw, bg, wwbuur, rugw, rwwb, wwwwrrru, wrb, grwrwu, wwggbu, ubb, rwgw, wrg, gbgbr, gwg, gbwuw, bgbwg, urrb, uwuwbbrw, uub, bww, wbggu, wuuwgw, guwr, ggww, ugrbb, uwr, buurg, wwuurwu, rbg, gugbw, uw, wurwubb, gbbb, gwru, ruwwrrw, gbrb, gwwgbb, uugr, urr, ugggub, gugw, wbbgb, rwgrwgg, gbw, rgwrrbr, uuubgwgg, wbrrugrw, ubw, bwgggg, bwwurru, wwb, grwug, rugbrr, ubbwggu, grr, ubbu, ggwwgg, uwb, gurrr, uu, gwbr, bbug, wbg, gwu, wgubrbr, gr, bwwrbgrr, bbbr, ru, rbbg, gug, ur, uuu, rbbu, wur, ruw, brggur, wgr, wwbbbwb, uru, gwgbw, gbguu, ggwgbg, buwur, rwb, uwur, bwwr, bburw, rgbwg, wubu, bbw, rbw, rgg, uww, bbb, bwgr, wwwuwg, bwu, bub, bb, buuw, bbrwbg, wrrb, wbguww, grwgwu, wbrww, grb, wurrr, bruubg, grgww, wwbwg, rguw, rug, gbr, rbbb, gbrr, wwbub, bwb, buubg, wbb, bggr, ww, rwrug, wbu, wrr, bgbw, rbr, wurwrg, uuw, rwbww, gbbgbb, wgbwb, b, wwuu, uggwg, wgruuubr, ug, uuwgw, urrw, wrbgu, burwrrr, gww, bbrbbg, bgw, rrwu, rrru, ruug, buurgu, rgw, rrbwu, uwgg, ugb, ugrwur, bgbg, ggwbg, rwbg, bgwu, wgbbbwb, gbu, ggb, wbr, gbur, brw, gb, bru, bwur, gbg, grguwgw, uwbggbrb, rbgb, ggbr, brbbbu, ugw, guu, bur, r, wgugbw, gggrwb, rru, wwbug, gbbbrw, brugwggw, buu, rubwrw, wguwr, urg, gwwbu, rbgg, bggu, brrrggbg, rgwugbww, rwuur, buw, guww, gwr, rwgg, rbgbbg, rugburw, rbgww, wbbwgbrr, ggr, wuuw, uwu, rrr, rrwgg, ggrgu, bruu, rbwuuww, gburbru, bbugw, uuub, gu, uwgurw, uggu, wurw, rrb, uurwbg, gw, wub, wbwrb, wgu, rur, gwrgw, wuww, gurwr, bbwuu, bggbg, brbgw, rrww, ubww, urguugw, uurwb, uugw, rurg, wwuugg, bbr, ubr, uwrbu, wwgbuu, uwrr, wbrwgbb, bwubwb, rgr, wbbuwbwg, ggu, rwuw, ggruww, ubwrrg, wrgg, gwbrr, rrugg, ubuuwgru, uwrbg, bwg, wwgw, urb, gubb, ugg, grwgrw, ruu, wru, ggbbuw, guwwb, ugrgw, gub, u, wrrurbb, uwuguru, rub, grwwg, wgg, wbbbru, gwrrwb, gwb, ubrgw, rr, gburu, urgubru, uwbwrwg, bwrrruuw, grrr, rw, wbubbru, bgg, urgb, wwg, rbugbuu, ggbb, wggr, wrgbu, rgurr, rrg, gubg, rrgrgrg, rwu, bguubg, bbugb, wgw, rrw, wug, wg, wwur, urw, wbubg, www, wwwwrb, rruwggu, bwbb, rwurr, rggg, wwwur, rbuu, uug, grub, rrug, gurr, wwu, wwwwrrr, ubugur, gbbbwrww, ubu, rwrubu, wrrw, gbguw, wbbgrg, wrw, rbwb, bbrrbw, ugu, rbb, rwwr, bwguuuw, bu, rrgwrg, urgrgr, ggwwwgu, grww, bbbwbbu, wbww, ub, wbbwb, gur, wu, gurgrwg, bubw, urug, uuguww, bwrrug, bbbb, rb, bbu, bguw, buug, ruwubg, wgwurrw, gguggrub, rwr, wrbw, ubbgrwu, bug, uuug, ggrgg, gg
 
 uburuurwgwwbwrurwubgrurrgwrwbuuugrggrgwwbwuggwguubrbg
@@ -404,7 +402,7 @@ uuubwggurugwrruuugrwgbrwbwgrrgugbrggrrwgrwrbbwgurrbururb
 wgbgubbgwggubuggrwwwbrrugwguwrbguuuwurwbrb`;
 
 
-const input_basic = `r, wr, b, g, bwu, rb, gb, br
+const input_real = `r, wr, b, g, bwu, rb, gb, br
 
 brwrr
 bggr
@@ -417,13 +415,9 @@ bbrgwb`;
 
 const [rawTowels,rawDesigns] = input.split('\n\n');
 const towels = rawTowels.split(',').map(s=>s.trim());
-console.log(towels.length);
-console.log([...new Set(towels)].length);
 const designs = rawDesigns.split('\n');
-//const designs = ['bwurrg']; 
 //const designs = ['rbugwrbrgggbwbgrwwrrwrguuurbbuwwwgubrbwbrrrrgwggruurrbrg'];
 // const designs = ['bggr'];
-//const designs = ['rbugwrbrgggbwbgrwwrrwrguuurbbuwwwgubrbwbrrrrgwggruurrbrg']; 
 
 console.log(towels);
 console.log('--');
@@ -450,159 +444,27 @@ const match = (design:string) => {
 	return nextDesigns;
 }; 
 
-const findAllIndexes = (string:string,pattern:string) => {
-	const indexes = [];
-	let start = 0;
-	let i:number;
-	i = string.indexOf(pattern,0);
-	while( i !== -1){
-		indexes.push(i);
-		start = i + pattern.length;
-		i = string.indexOf(pattern,start);
-	}
-	return indexes;
-};
+let valid = 0;
+designs.forEach((cur)=>{
 
-
-
-type StringArrDict = Record<string,string[]>
-type NumberArrDict = Record<number,number[]>
-
-
-// const walk_1 = (index:number,paths:StringArrDict,total:number):boolean => {
-// 	const results = [];
-// 	console.log('index',index);	
-// 	console.log(paths[index]);
-// 	if(paths[index] === undefined){
-// 		//return false;
-// 	}
-// 	for (const path of paths[index]){
-// 		console.log('path',path);	
-// 		const next = paths[index+path.length];
-// 		if(!next){
-// 			results.push(index+path.length === total);
-// 			continue;
-// 		}
-// 		//console.log('---');
-// 		//console.log(index+path.length);
-// 		for (const nextPath of next) {
-// 			console.log(`next: ${path}|${nextPath}`);
-// 			const result = walk(index+path.length,paths,total);
-// 			if (result){
-// 				return result;
-// 			}
-// 			results.push(walk(index+path.length,paths,total));
-
-// 		}
-		
-// 	}
-// 	return results.includes(true);
-// };
-
-
-//const walkDef =  (index:number,paths:NumberArrDict,towel:string):number => {
-const walkDef = (design:string, towels:string[]):number => {
-//console.log('index',index);	
-	//console.log(paths[index]);
-	let value = 0;
-	if(design === ''){
-		return 1;
-	}
-	for (const towel of towels){
-		if(design.startsWith(towel)){
-			value += walk(design.slice(towel.length),towels);
-			
+	let nextDesigns = [cur];
+	while (nextDesigns.length > 0){
+		console.log(nextDesigns.length);
+		const nDesigns = [];
+		//console.log(nextDesigns);
+		//console.log();
+		for (const design of nextDesigns){
+			nDesigns.push(...match(design));
 		}
-	}
-
-	return value;
-
-
-
-	// let result = 0;
-	// if(paths[index] === undefined){
-	// 	return result;
-	// }
-	
-	// for (const path of paths[index]){
-	// 	//console.log('path',path);	
-	// 	if(index+path === towel.length){
-	// 		result++;
-	// 	}
-	// 	const next = paths[index+path];
-	// 	if(!next){
-	// 		continue;
-	// 	}
-	// 	//console.log('---');
-	// 	//console.log(index+path.length);
-	// 	result += walk(index+path,paths,towel);
-	// }
-	// return result;
-};
-
-// //const walk = _.memoize(walkDef,(index,_,towel)=>index+towel);
-// const cache = new Map<string,number>();
-// function walk(index:number,paths:NumberArrDict,towel:string):number{
-// 	if(cache.has(index+towel)){
-// 		console.log('hit');
-// 		return cache.get(index+towel) as number;
-// 	}
-// 	else {
-// 		const result = walkDef(index,paths,towel);
-// 		cache.set(index+towel,result);
-// 		return result;
-// 	}
-// }
-
-const walk = memoizee(walkDef);
-
-const main = (designs:string[],towels:string[],shouldLog=false) => {
-	const valid:number[] = [];
-	designs.forEach((cur:string)=>{
-		if(shouldLog){console.log('cur',cur);}
-		//const paths:StringArrDict = {};
-		const paths:NumberArrDict = {};
-		//console.log(cur);
-		for (const towel of towels){
-			const indexes = findAllIndexes(cur,towel);
-			//console.log('towel:',towel);
-			indexes.forEach((index)=>{
-				paths[index] ??= [];
-				//paths[index].push(towel);
-				paths[index].push(towel.length);
-			});
+		if(nDesigns.includes('Ö')){
+			//console.log('valid:',cur);
+			valid++;
+			break;	
 		}
-		//console.log(paths);
-		//const result = paths[0]? walk(0,paths,cur.length):false;
-		//valid.push(walk(0,paths,cur));
-		valid.push(walk(cur,towels));
-		//console.log(cur,'walk result',result);
-		
-	});
-	return valid;
-};
+
+		nextDesigns = nDesigns;
+	}
+});
 
 
-
-//console.log(towels.filter(towel=>towel.length === 1));	
-// towels = towels.filter(towel => {
-// 	console.log('------------');
-// 	process.stdout.write(`towel ${towel} `);
-// 	const fTowels  = towels.filter(t=>t !== towel);
-// 	const result = main([towel],fTowels);
-// 	console.log(result);
-// 	return result === 0;
-// });
-
-console.log(towels);
-console.log('towels length',towels.length);
-
-const result = main(designs,towels,true);
-console.log('result',result);
-console.log(result.reduce((acc,cur)=>acc+cur,0));
-
-//console.log(valid);
-
-//low 455410606491519
-//    455410606491519
-//      666491493769758
+console.log(valid);
