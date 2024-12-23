@@ -1,0 +1,21 @@
+import { readFileSync } from 'fs';
+
+const input = readFileSync('./input.txt','utf-8');
+
+const [towels,designs] = input.split('\n\n').map((s,i)=>i===0 ? s.split(',').map(s=>s.trim()) : s.split('\n'));
+
+const walkDef = (design:string, towels:string[]):number => design === '' ?
+	1 : towels.map((towel)=>design.startsWith(towel) ? 
+		walk(design.slice(towel.length),towels) : 0).reduce((acc,cur)=>acc+cur);
+
+const cache = new Map<string,number>();
+
+function walk(design:string, towels:string[]):number{
+	return cache.has(design) ? cache.get(design) as number : (()=>{
+		const result = walkDef(design,towels);
+		cache.set(design,result);
+		return result;
+	})();
+}
+
+console.log(designs.map((cur)=>walk(cur,towels)).reduce((acc,cur)=>acc+cur,0));

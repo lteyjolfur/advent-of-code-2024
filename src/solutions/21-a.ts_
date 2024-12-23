@@ -1,0 +1,246 @@
+import { match } from 'assert';
+import { readFileSync } from 'fs';
+import readline from 'readline';
+
+//const input = readFileSync('./input.txt','utf-8');
+
+const input_basic = `029A
+980A
+179A
+456A
+379A`;
+
+const input = `593A
+283A
+670A
+459A
+279A`;
+
+const numericCodes:number[] = [];
+const codes = input.split('\n').map(row=>{
+	numericCodes.push(Number(row.split('A')[0]));
+	return row.split('');
+});
+
+const keyPad = [
+	['7','8','9'],
+	['4','5','6'],
+	['1','2','3'],
+	['E','0','A']
+];
+
+const dirPad = [
+	['E','^','A'],
+	['<','v','>'],
+];
+
+type Dir = ('v'|'^'|'>'|'<')
+
+type Vec = {
+	x:number,
+	y:number
+}
+
+const sum = (a:Vec,b:Vec) => ({y:a.y+b.y,x:a.x+b.x}); 
+const sub = (a:Vec,b:Vec) => ({y:a.y-b.y,x:a.x-b.x});
+
+const keyMap:Record<string,Vec> = {};
+const padMap:Record<string,Vec> = {};
+
+keyPad.forEach((row,y)=>row.forEach((n,x)=>{
+	keyMap[n] = {y,x};
+}));
+
+dirPad.forEach((row,y)=>row.forEach((n,x)=>{
+	padMap[n] = {y,x};
+}));
+
+
+
+const directions = [
+	'v',
+	'<',
+	'>',
+	'^',
+];
+
+const dirToPos = {
+	v: {x:0,y:1},
+	'<': {x:-1,y:0},
+	'>': {x:1,y:0},
+	'^': {x:0,y:-1},
+};
+
+const vDir = ['^','v'];
+const hDir = ['<','>'];
+
+let total = 0;
+
+const makeDir = (n:number,dir:string[]) => Array(Math.abs(n)).fill(dir[n<0?0:1]);
+
+const numNum = (codeInput:string[],position:number):string[] => {
+	const isFirst = position === 0;
+	const next:string[] = [];
+	console.log('----');
+		
+	console.log(codeInput.join(''));
+
+	codeInput.forEach((cur,i,caller)=>{
+		const map = isFirst? keyMap:padMap;
+		const prev = caller[i-1] ?? 'A';
+		const prevPos = map[prev];
+		const curPos = map[cur];
+		const {x,y}= sub(curPos,prevPos);
+		
+		let paths = [[...makeDir(x,hDir),...makeDir(y,vDir)],[...makeDir(y,vDir),...makeDir(x,hDir)]];
+		paths = paths.filter(path => {
+			let tempPos = {...prevPos};
+			const realPath = path.map((dir:Dir)=>{
+				const nextMove = dirToPos[dir];
+				const nextPos = sum(nextMove,tempPos);
+				tempPos = nextPos;
+				const pad = isFirst? keyPad:dirPad;
+				return pad[nextPos.y][nextPos.x];
+			});
+			return !realPath.includes('E');
+		});
+
+		if (paths.length>1){
+			const scores = paths.map( path => {
+				let curPath = path;
+				for (let i = position+1; i<3;i++){
+					curPath = numNum(path,i);
+				}
+				return curPath.length;
+			});
+			
+			if (scores[0]!== scores[1]){
+				console.log('scores',scores);
+				let lowest = Infinity;
+				let lI = 0;
+				scores.forEach((score,i)=>{
+					if (score<lowest){
+						lowest = score;
+						lI = i;
+					}
+				});
+				console.log('lowest:',lowest,'lI',lI);
+				console.log('before',paths);
+				paths = paths.filter((_,i)=>lI!==i);
+				console.log('after',paths);
+			}
+			
+		}
+	
+	
+		//console.log(realPath);
+		
+		
+		next.push(...paths[0],'A');
+	});
+	
+	console.log(next);
+	return next;
+};
+
+
+
+codes.forEach((code,i)=>{
+
+	const codeInput:string[] = [];
+	//const padInput:string[] = [];
+
+	// code.forEach((cur,i)=>{
+	// 	const prev = code[i-1] ?? 'A';
+	// 	const prevPos = keyMap[prev];
+	// 	const curPos = keyMap[cur];
+	// 	const move = sub(curPos,prevPos);
+	// 	const absX = Math.abs(move.x);
+	// 	const absY = Math.abs(move.y);
+	// 	//console.log(move);
+	// 	if(move.y<0){
+	// 		codeInput.push(...Array(absY).fill('^'),...Array(absX).fill(move.x>0?'>':'<'));
+	// 	} else {
+	// 		codeInput.push(...Array(absX).fill(move.x>0?'>':'<'),...Array(absY).fill('v'));
+	// 	}
+	// 	codeInput.push('A');
+
+	// });
+
+	// console.log(codeInput);
+
+	
+
+
+	const padInput0 = numNum(code,0);
+	const padInput1 = numNum(padInput0,1); 
+	const padInput2 = numNum(padInput1,2);
+
+
+	//console.log(padInput1);
+	console.log(padInput2.join(''));
+	console.log(numericCodes[i]*padInput2.length);
+	console.log(`${padInput2.length} * ${numericCodes[i]}`);
+	total += numericCodes[i]*padInput2.length;
+});
+
+console.log('total:', total);
+
+
+// forward solver?
+
+//<A>A<AAv<AA>>^AvAA^Av<AAA>^A
+
+//<v<A>>^AvA^Av<'<'A>>^AAv<A<A>>^AAvAA<^A>Av<A>^AA<A>Av<A<A>>^AAAvA<^A>A
+//<v<A>>^AvA^A<v   A<AA>>^AAvA<^A>AAvA^A<   vA>^AA<A>A<v<A>A>^AAAvA<^A>A
+//const command = 'v<<A>>^A<A>AvA<^AA>A<vAAA>^A'.split('');
+// const command = '<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'.split('');
+
+// const robotAction = (command:string[]) => {
+// 	let pos = padMap['A'];
+
+// 	const result:string[] = [];
+// 	command.forEach((step)=>{
+// 		if(step === 'A'){
+// 			result.push(dirPad[pos.y][pos.x]);
+// 			return;
+// 		}
+// 		pos= sum(dirToPos[step as Dir] ,pos);
+// 	});
+	
+// 	return result;
+// };
+
+// console.log('step 0');
+// console.log(command);
+// console.log(command.join(''));
+// const result0 = robotAction(command);
+// console.log('step 1');
+// console.log(result0);
+// console.log(result0.join(''));
+// const result1 = robotAction(result0);
+// console.log('final step');
+// console.log(result1);
+// console.log(result1.join(''));
+
+
+// let pos =keyMap['A'];
+// const result3:string[] = [];
+// result1.forEach((step)=>{
+// 	if(step === 'A'){
+// 		result3.push(keyPad[pos.y][pos.x]);
+// 		return;
+// 	}
+// 	pos= sum(dirToPos[step as Dir] ,pos);
+// });
+
+// console.log(result3);
+
+// const nextMove = dirToPos[dir];
+// const nextPos = sum(nextMove,tempPos);
+// tempPos = nextPos;
+// const pad = isFirst? keyPad:dirPad;
+// return pad[nextPos.y][nextPos.x];
+
+
+//163872 high
