@@ -1,0 +1,101 @@
+import { readFileSync,writeFileSync } from 'fs';
+
+const input_r = readFileSync('./input.txt','utf-8');
+
+const input_2 = `ka-co
+ta-co
+de-co
+ta-ka
+de-ta
+ka-de`;
+
+const input= `kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn`;
+
+
+const sets:string[][][] = [[]];
+
+input.split('\n').forEach(row=>{
+	sets[0].push(row.split('-'));
+});
+
+const nextSet = (set:string[][]) => {
+	const setPlus:Set<string> = new Set();
+	let total = 0;
+	set.forEach((member,i)=>{
+		console.log('----');
+		const rest = set.slice(i+1);
+		console.log(member.join('-'));
+		const hits =  member.map((computer)=>rest.filter(c=>c.includes(computer)).map(c=>c.filter(p=>!member.includes(p))).flat());
+		if(hits.some(c=>c.length===0)){
+			return;
+		}
+		
+		const confirmed = hits[0].filter(c=>hits.slice(1).every((hit)=> hit.includes(c)));
+		total+= confirmed.length;
+		confirmed.forEach(c=>{
+			setPlus.add(JSON.stringify([...member,c].sort()));	
+		});
+		
+	});
+	console.log('total',total);
+	return [...setPlus].map(s=>JSON.parse(s));
+};
+
+
+
+let i = 0;
+while (sets[i].length) {
+	sets[i+1] = nextSet(sets[i]);
+	console.log(sets[i+1]);
+	++i; 
+}
+
+console.log('answer =',sets.at(-2)?.join());
+
+
+
+
+
+
+console.log(sets[1]);
+console.log(sets[1].length);
+console.log();
+
+const problem1 = (triplet:string[][]) => {
+	const result = triplet.filter((t)=>t.some(s=>s.startsWith('t')));
+	console.log(result);
+	console.log(result.length);
+};
+
+

@@ -7,3 +7,26 @@ E <A>A<AAv<AA>>^AvAA^Av<AAA>^A
 
 R <v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A
 E v<<A>>^AvA^Av<<A>>^AAv<A<A>>^AAvAA^<A>Av<A>^AA<A>Av<A<A>>^AAAvA^<A>A
+  
+  
+recursion 3
+E v<<A>>^AvA^  A<vA<A  A>>^A   Av  A<^A>A  Av A^  A<vA^>AA<A>Av<<A>A^>AAA<Av>A^A
+R <vA <  A A>>^Av A A<^A>  A<v<A>>^Av A^A<vA>^A<v<A>^A> AAvA^A<v<A>A>^AAAvA<^A>A
+
+a b c d
+0 0 0 0 175396398527088
+0 0 0 1 175396398527088
+0 0 1 0 182840045050160
+0 0 1 1 154115708116294
+0 1 0 0
+0 1 0 1
+0 1 1 0
+0 1 1 1
+1 0 0 0
+1 0 0 1
+1 0 1 0
+1 0 1 1
+1 1 0 0
+1 1 0 1
+1 1 1 0
+1 1 1 1

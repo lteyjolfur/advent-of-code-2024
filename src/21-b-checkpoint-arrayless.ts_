@@ -14,9 +14,7 @@ const input = `593A
 459A
 279A`;
 
-const KEYPADS = 26; //26;
-const DEPTH  = KEYPADS;
-//const DEPTH = 26;
+const KEYPADS = 3;
 
 const numericCodes:number[] = [];
 const codes = input.split('\n').map(row=>{
@@ -76,7 +74,7 @@ const dirToPos = {
 const vDir = ['^','v'];
 const hDir = ['<','>'];
 
-const total = 0;
+let total = 0;
 
 const makeDir = (n:number,dir:string[]) => Array(Math.abs(n)).fill(dir[n<0?0:1]);
 
@@ -93,52 +91,23 @@ const removeInvalidPaths = (paths:any[][],prevPos:Vec,pad:string[][]) => {
 	});
 };
 
-const selectPaths = (x:number,y:number,isFirst:boolean) => {
+const selectPaths = (x:number,y:number) => {
 	const vFirst = [[...makeDir(y,vDir),...makeDir(x,hDir)],[...makeDir(x,hDir),...makeDir(y,vDir)]];
 	const hFirst = [[...makeDir(x,hDir),...makeDir(y,vDir)],[...makeDir(y,vDir),...makeDir(x,hDir)]]; 
 	
 	switch (true){
-	case x<0: 
+	case x<0:
 		return hFirst;
-	case x>0:
+	case y<0:
+		return vFirst;
+	case y>0:
 		return vFirst;
 	default:
-		//X
 		return hFirst;
 	}
-	
-
-	// if(!isFirst){
-	// 	switch (true){
-	// 	case x<0:
-	// 		return hFirst;
-	// 	case y<0:
-	// 		return vFirst;
-	// 	case y>0:
-	// 		return vFirst;
-	// 	default:
-	// 		return hFirst;
-	// 	}
-	// } else {
-	// 	switch (true){
-	// 	case x>0:
-	// 		return hFirst;
-	// 	case y<0:
-	// 		return vFirst;
-	// 	case x<0:
-	// 		return hFirst;
-	// 	default:
-	// 		return hFirst;
-	// 	}
-	// } 
 };
 
-const pathExplorer:string[][] = [[],[],[]]; 
-
-const pathfindDef = (cur:string,prev:string, isFirst:boolean,depth:number) => {
-	if (depth ===DEPTH ){//>= KEYPADS){
-		return 0;
-	}
+const pathfindDef = (cur:string,prev:string, isFirst:boolean):string[] => {
 	const map = isFirst? keyMap:padMap;
 	const pad = isFirst? keyPad:dirPad;
 	const prevPos = map[prev];
@@ -146,80 +115,94 @@ const pathfindDef = (cur:string,prev:string, isFirst:boolean,depth:number) => {
 
 	const {x,y}= sub(curPos,prevPos);
 	
-	let paths = selectPaths(x,y,isFirst);
+	let paths = selectPaths(x,y);
 	paths = paths.filter(path => {
-		let nextPos = {...prevPos};
+		let tempPos = {...prevPos};
 		const realPath = path.map((dir:Dir)=>{
 			const nextMove = dirToPos[dir];
-			nextPos = sum(nextMove,nextPos);
-			
+			const nextPos = sum(nextMove,tempPos);
+			tempPos = nextPos;
 			return pad[nextPos.y][nextPos.x];
 		});
 		return !realPath.includes('E');
-	});	
-	
-	paths[0].push('A');
-	const usedPath = [...paths[0] as string[]];
-	//pathExplorer[depth].push(...usedPath);
-	//console.log(usedPath);
-	const nextScore = numNum(usedPath,depth+1);
-	if(DEPTH-1 === depth){
-		return paths[0].length+nextScore; 
-	}
-	return nextScore;
-	//+ usedPath.map(numNum(usedPath,recCount+1)).reduce((acc,cur)=>acc+cur); // to add 'A';
+	});		
+	return paths[0] as string[];
 };
 
-const pathfind = memoize(pathfindDef, {
-	normalizer: args => {
-		const [cur,prev,isFirst,depth] = args;
-		return `${cur}-${prev}-${isFirst}-${depth}`;
-	}
-});
-//const pathfind = pathfindDef;
+const pathfind = memoize(pathfindDef);
 
-const numNum = (codeInput:string[],depth=0) => {
-	const isFirst = depth === 0;
-	let score = 0;
+const numNum = (codeInput:string[],position:number):string[] => {
+	const isFirst = position === 0;
+
+
+	const next:string[] = [];
 	//console.log('----');
 		
 	//console.log(codeInput.join(''));
 	let prev = 'A';
 	codeInput.forEach((cur)=>{
-		const nextScore = pathfind(cur,prev,isFirst,depth);
+		
+		const path = pathfind(cur,prev,isFirst);
 		prev = cur;
-		score += nextScore;
-		//paths[depth].push(...path);
-
+		next.push(...path,'A');
 	});
-	return score;
+	return next;
 };
 
 
-let totalScore = 0;
+
+//
+// [
+// 	'^^^<<'.split(''),
+// 	'^<<^^'.split(''),
+// ].forEach((code,i)=>{
 codes.forEach((code,i)=>{
 	console.log('index: ',i);
+	const codeInput:string[] = [];
+	//const padInput:string[] = [];
+
+	// code.forEach((cur,i)=>{
+	// 	const prev = code[i-1] ?? 'A';
+	// 	const prevPos = keyMap[prev];
+	// 	const curPos = keyMap[cur];
+	// 	const move = sub(curPos,prevPos);
+	// 	const absX = Math.abs(move.x);
+	// 	const absY = Math.abs(move.y);
+	// 	//console.log(move);
+	// 	if(move.y<0){
+	// 		codeInput.push(...Array(absY).fill('^'),...Array(absX).fill(move.x>0?'>':'<'));
+	// 	} else {
+	// 		codeInput.push(...Array(absX).fill(move.x>0?'>':'<'),...Array(absY).fill('v'));
+	// 	}
+	// 	codeInput.push('A');
+
+	// });
+
+	// console.log(codeInput);
+
 	
-	const score = numNum(code);
-	totalScore += score*numericCodes[i];
-	console.log('-------');
-	console.log(code);
-	//pathExplorer.forEach(path => console.log(path.join('')));
-	//pathExplorer = Array.from({length:KEYPADS},()=>[]);
+	let padInput = code;
+
+	for (let i = 0; i<KEYPADS; i++){ // TODO: CHANGE TO 0
+		padInput = numNum(padInput,i);
+		console.log(padInput.join(''));
+	}
+
 	
-	console.log('score:',score);
+	
+
 	//console.log(padInput1);
-	// console.log(padInput.join(''));
-	// console.log('length', padInput.length);
-	// console.log(numericCodes[i]*padInput.length);
-	// console.log(`${padInput.length} * ${numericCodes[i]}`);
-	// total += numericCodes[i]*padInput.length;
+	console.log(padInput.join(''));
+	console.log('length', padInput.length);
+	console.log(numericCodes[i]*padInput.length);
+	console.log(`${padInput.length} * ${numericCodes[i]}`);
+	total += numericCodes[i]*padInput.length;
 });
-console.log(totalScore);
+
 console.log('total:', total);
 
 
-// forward solver
+// forward solver?
 
 //<A>A<AAv<AA>>^AvAA^Av<AAA>^A
 
@@ -234,53 +217,10 @@ console.log('total:', total);
 // const pad = isFirst? keyPad:dirPad;
 // return pad[nextPos.y][nextPos.x];
 
-// part 1
+
 //163872 high
 //166244 low
-
-// part 2
-// 91,158,571,398,634 low 25
-// 121,527,163,247,592 ??? 25
-// 230,904,909,907,784 high 26 testcode
-// 307,828,634,963,754 high 26 correct?
-// largest
-// 9,007,199,254,740,991
-
-// part 2 test
-// testHigh reddit
-// 246,822,631,766,548
-// testHigh E
-// 230,904,909,907,784
-// test correct
-// 154,115,708,116,294
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const move = (codeInput:string[],position:number,start='A'):string[] => {
+const move = (codeInput:string[],position:number,start='A',end=KEYPADS):string[] => {
 	const isFirst = position === 0;
 	const map = isFirst? keyMap:padMap;
 	const pad = isFirst? keyPad:dirPad;
@@ -330,7 +270,7 @@ const padActuation = () => {
 	},{
 		name:'leftup',
 		padInput: ['<','^'],
-		start: '>'
+		start: 'A'
 	},{	
 		name:'downright',
 		padInput: ['v','>'],
@@ -361,7 +301,7 @@ const padActuation = () => {
 	testParams.forEach(({name,padInput,start})=>{
 		console.log('---');
 		console.log(name);
-		for (let i = 2; i<10; i++){
+		for (let i = 1; i<5; i++){
 			padInput = move(padInput,i,start);
 		}
 		console.log(padInput.length);	
@@ -369,7 +309,6 @@ const padActuation = () => {
 	
 };
 
-padActuation();
 
 function executeRobotCommands() {
 	const command = '<vA<AA>>^AvAA<^A>Av<<A>>^AvA^Av<<A>>^AAvA<A^>A<A>Av<<A>A^>AAA<A>vA^A'.split('');
