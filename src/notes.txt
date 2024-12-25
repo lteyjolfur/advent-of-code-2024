@@ -30,3 +30,46 @@ a b c d
 1 1 0 1
 1 1 1 0
 1 1 1 1
+
+
+24. notes
+
+x00*y00=jfb
+x00^y00= z00
+x00>
+y00<
+
+Z09 bara and
+z05 
+  { x: 'rnk', y: 'mkq', gate: 'OR', o: 'z05' },
+  { x: 'tsw', y: 'wwm', gate: 'AND', o: 'rnk' },
+  { x: 'y05', y: 'x05', gate: 'AND', o: 'mkq' },
+  { x: 'dmh', y: 'dsn', gate: 'OR', o: 'tsw' },
+  { x: 'x05', y: 'y05', gate: 'XOR', o: 'wwm' },
+  { x: 'cwp', y: 'rsk', gate: 'AND', o: 'dmh' },
+  { x: 'x04', y: 'y04', gate: 'AND', o: 'dsn' }
+z06 X
+  { x: 'hdt', y: 'gwg', gate: 'XOR', o: 'z06' },
+  { x: 'tsw', y: 'wwm', gate: 'XOR', o: 'hdt' },
+  { x: 'y06', y: 'x06', gate: 'XOR', o: 'gwg' }
+z07 control
+  { x: 'jjg', y: 'shj', gate: 'XOR', o: 'z07' },
+  { x: 'wgp', y: 'ncj', gate: 'OR', o: 'jjg' },
+  { x: 'y07', y: 'x07', gate: 'XOR', o: 'shj' },
+  { x: 'y06', y: 'x06', gate: 'AND', o: 'wgp' },
+  { x: 'hdt', y: 'gwg', gate: 'AND', o: 'ncj' }
+
+z10 allt of mörg test
+
+swap hdt-z05, gbf-z09 jgt mht
+
+fix 15
+X  10011001101001101111000000001 1111111011001101
+Y  11011110001101011100010011111 0100100000011001
+R 101110111110110101011010100001 1100011011100110
+E 101110111110111001011010100001 0100011011100110
+
+X 10011001101001 1011110000000011111111011001101
+Y 11011110001101 0111000100111110100100000011001
+E101110111110110 1010110101000010100011011100110
+R101110111110111 0010110101000010100011011100110

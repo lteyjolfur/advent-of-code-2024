@@ -1,0 +1,9 @@
+{
+    "dotnet.defaultSolution": "AOC-15.sln",
+    "[csharp]": {
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.trimAutoWhitespace": true
+}
+}
