@@ -65,15 +65,11 @@ input.split('\n\n').forEach((string)=>{
 let fits = 0;
 keys.forEach(key=>{
 	locks.forEach((lock)=>{
-		console.log(key,lock);
 		lock.every((t,i)=>{
 			const res = t+key[i]<6;
-			//console.log(key[i],t,res);
 			return res;
 		}) && fits++;
 	});
 });
 
-console.log(keys);
-console.log(locks);
 console.log(fits);
